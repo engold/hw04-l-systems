@@ -49,6 +49,7 @@ class ShaderProgram {
     }
 
     this.attrPos = gl.getAttribLocation(this.prog, "vs_Pos");
+    this.attrNor = gl.getAttribLocation(this.prog, "vs_Nor");
     this.attrCol = gl.getAttribLocation(this.prog, "vs_Col");
     this.attrTranslate = gl.getAttribLocation(this.prog, "vs_Translate");
     this.attrUV = gl.getAttribLocation(this.prog, "vs_UV");
@@ -131,18 +132,21 @@ class ShaderProgram {
       gl.enableVertexAttribArray(this.attrPos);
       gl.vertexAttribPointer(this.attrPos, 4, gl.FLOAT, false, 0, 0);
       gl.vertexAttribDivisor(this.attrPos, 0); // Advance 1 index in pos VBO for each vertex
+      
     }
 
     if (this.attrNor != -1 && d.bindNor()) {
       gl.enableVertexAttribArray(this.attrNor);
       gl.vertexAttribPointer(this.attrNor, 4, gl.FLOAT, false, 0, 0);
       gl.vertexAttribDivisor(this.attrNor, 0); // Advance 1 index in nor VBO for each vertex
+
     }
 
     if (this.attrCol != -1 && d.bindCol()) {
       gl.enableVertexAttribArray(this.attrCol);
       gl.vertexAttribPointer(this.attrCol, 4, gl.FLOAT, false, 0, 0);
       gl.vertexAttribDivisor(this.attrCol, 1); // Advance 1 index in col VBO for each drawn instance
+
     }
 
     if (this.attrTranslate != -1 && d.bindTranslate()) {
@@ -171,6 +175,7 @@ class ShaderProgram {
     // by the GPU, thus being the same value for the first set of four vertices,
     // then advancing to a new value for the next four, then the next four, and
     // so on.
+    // gl.drawElementsInstanced(d.drawMode(), d.elemCount(), gl.UNSIGNED_INT, 0, d.numInstances);
     gl.drawElementsInstanced(d.drawMode(), d.elemCount(), gl.UNSIGNED_INT, 0, d.numInstances);
 
     if (this.attrPos != -1) gl.disableVertexAttribArray(this.attrPos);

@@ -10,6 +10,7 @@ class Mesh extends Drawable {
   colors: Float32Array;
   uvs: Float32Array;
   center: vec4;
+  offsets: Float32Array; // Data for bufTranslate, added for InstanceVBO stuff
 
   objString: string;
 
@@ -26,6 +27,7 @@ class Mesh extends Drawable {
     let uvsTemp: Array<number> = [];
     let idxTemp: Array<number> = [];
 
+    //objString is the content of the obj file (not the file path)
     var loadedMesh = new Loader.Mesh(this.objString);
 
     //posTemp = loadedMesh.vertices;
@@ -60,6 +62,7 @@ class Mesh extends Drawable {
     this.generateCol();
 
     this.count = this.indices.length;
+    this.numInstances = 1;
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufIdx);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indices, gl.STATIC_DRAW);
 
@@ -78,6 +81,18 @@ class Mesh extends Drawable {
     console.log(`Created Mesh from OBJ`);
     this.objString = ""; // hacky clear
   }
+
+  setInstanceVBOs(offsets: Float32Array, colors: Float32Array) {
+    this.colors = colors;
+    this.offsets = offsets;
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.bufCol);
+    gl.bufferData(gl.ARRAY_BUFFER, this.colors, gl.STATIC_DRAW);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTranslate);
+    gl.bufferData(gl.ARRAY_BUFFER, this.offsets, gl.STATIC_DRAW);
+  }
+
+
 };
 
 export default Mesh;
