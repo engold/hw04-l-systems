@@ -24,12 +24,13 @@ class Turtle {
     // quaternion - axis and angle to rotate
     let q: quat = quat.create();
     let randChance = Math.random(); // random number between 0 and 1
-    let rotAxis = vec3.fromValues(0.0, 0.0, 1.0);  
+    let rotAxis = vec3.fromValues(0.0, 0.0, 1.0);
+    let degree = -this.rotAmount * (PI / 180.0);  
     if(randChance < 0.5){
-        rotAxis = vec3.fromValues(0.0, 1.0, 0.0);  
+        rotAxis = vec3.fromValues(0.0, 1.0, 0.0); 
+        degree = degree *(Math.random() *10) ; 
     }
    
-    let degree = -this.rotAmount * (PI / 180.0);
     // normalize the quaternion
     vec3.normalize(rotAxis, rotAxis);
 
