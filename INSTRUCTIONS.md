@@ -32,9 +32,9 @@ Inspiration Image
 - Instance rendering is used for all of the plant geometry. The pot and dirt were modeled in Maya and then read in from an obj loader. 
 
 ## L-System attributes
-  - plant grows in 3D. There is some probalility that rotations will happen either on the Z-axis or on the Y-axis to ensure variation in how branches grow. 
+  - plant grows in 3D. There is some probability that rotations will happen either on the Z-axis or on the Y-axis to ensure variation in how branches grow. 
   - At the end of every branch there is the possibility of there either being a leaf, a blue berry, or a tiny unripe berry. Leaves have the highest probablility of appearing: 65%, followed by blue berries with a 25% chance, and little green berries with a 10% chance.
-  -  Using randomness to decide which axes to rotate on as well as utilizing different probalilities in which drawing functions are chosen and which expansion rules are used in order to create output that looks organic/random as seen in nature.
+  -  Using randomness to decide which axes to rotate on as well as utilizing different probabilities in which drawing functions are chosen and which expansion rules are used in order to create output that looks organic/random as seen in nature.
   - The backdrop is a cloudy sky horizon that changes from day to night and incorporates fbm noise.
 
 ## GUI
