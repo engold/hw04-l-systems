@@ -138,6 +138,7 @@ function loadScene() {
 
   // mesh for the pot
   let obj0: string = readTextFile('./src/geometry/plantpot.obj');
+  //https://raw.githubusercontent.com/engold/hw04-l-systems/master/src/geometry/plantpot.obj
   wahoo = new Mesh(obj0, vec3.fromValues(0.0, 0.0, 0.0));
   wahoo.create();
   // set up mesh VBOs for 1 instance
@@ -156,6 +157,7 @@ function loadScene() {
 
    // mesh for the dirt
    let obj1: string = readTextFile('./src/geometry/dirt.obj');
+   //https://raw.githubusercontent.com/engold/hw04-l-systems/master/src/geometry/dirt.obj
    dirt= new Mesh(obj1, vec3.fromValues(0.0, 0.0, 0.0));
    dirt.create();
    // set up mesh VBOs for 1 instance
