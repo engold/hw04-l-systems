@@ -8,6 +8,7 @@ Link: https://engold.github.io/hw04-l-systems/
 ![](plant1.PNG)
 
 Inspiration Image
+
 ![](ref.png)
 
 ## References
@@ -17,16 +18,16 @@ Inspiration Image
 - The scene updates/regenerates automatically when the gui sliders for iterations or angle size are changed. The three sliders for Leaf Color can be moved and set, but the scene will not update until the UpdateColor button (underneath the sliders) is pressed.
 
 ## L-System Classes
--   Turtle
-  -    Keeps track of the position, orientation, quaternion for rotation, and recursion depth.
+- Turtle
+  - Keeps track of the position, orientation, quaternion for rotation, and recursion depth.
 -   ExpansionRules
-  -   Includes the axiom, the starting string from which the grammar is expanded.
-  -   Includes mappings of characters to other charcters. This uses a Map<string, Map<number, any>>, where the string is the character, and the second map is for the probablility and corresponding expansion function (which just replaces the existing character with a new string). A single character can map to different strings based on the designated probability.
+  - Includes the axiom, the starting string from which the grammar is expanded.
+  - Includes mappings of characters to other charcters. This uses a Map<string, Map<number, any>>, where the string is the character, and the second map is for the probablility and corresponding expansion function (which just replaces the existing character with a new string). A single character can map to different strings based on the designated probability.
 -   Lsystem 
-  -   Includes a Turtle to "draw" as it moves and rotates according to the associated drawing functions for each character as the grammar string is read.
-  -    Includes a Turtle History array (treated as a stack) to save/restore the states of turtles
-  -    Includes Expanion Rules: mappings of what a character becomes in the next iteration as it's expanded. 
-  -    Includes Drawing Rules: functions to apply to the Turtle to draw the Lsystem.
+  - Includes a Turtle to "draw" as it moves and rotates according to the associated drawing functions for each character as the grammar string is read.
+  - Includes a Turtle History array (treated as a stack) to save/restore the states of turtles.
+  - Includes Expanion Rules: mappings of what a character becomes in the next iteration as it's expanded. 
+  - Includes Drawing Rules: functions to apply to the Turtle to draw the Lsystem.
   
 - Instance rendering is used for all of the plant geometry. The pot and dirt were modeled in Maya and then read in from an obj loader. 
 
