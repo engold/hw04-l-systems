@@ -1,21 +1,19 @@
 class ExpansionRules {
-    // beginning string
+    // start string
     axiom: string;
-    // the rules by which each character maps to a new character(s)
-    //grammar : Map<string, any> = new Map();
+    // the map of rules that dictate which characters map to other characters
     grammarMap : Map<string, Map<number, any>> = new Map<string, Map<number, any>>();
   
     constructor() {
      
       this.axiom = "X"; // Start with example from class
-      //this.grammarMap.set("F", this.FmapsTo); // F char and the expansion string F maps to
-      //this.grammarMap.set("X", this.XmapsTo); // X char and the expansion string X maps to
      
       this.addExpansionRule("X", 1.0, this.XmapsTo);
       this.addExpansionRule("F", 0.5, this.FmapsTo);
       this.addExpansionRule("F", 0.5, this.FmapsTo2);  
-      //this.addExpansionRule("*", 0.5, this.leafMapsToLeaf);  
-      //this.addExpansionRule("*", 0.5, this.leafMapsToNone);  
+      this.addExpansionRule("*", 0.65, this.leafMapsToLeaf);  
+      this.addExpansionRule("*", 0.25, this.leafMapsToOtherLeaf);  
+      this.addExpansionRule("*", 0.10, this.leafMapsToBerry); 
      
     }
   
@@ -51,15 +49,12 @@ class ExpansionRules {
          }
      }
   
-    // Expansion mapping functions
-    // 50% chance of being chosen
+    // Expansion mapping functions for expanding char to more chars/ another char
     FmapsTo(): String {
-      // return string to add to grammar
        return "FF";    
     }
-    // 50% chance
+
     FmapsTo2(): String {
-      // return string to add to grammar
        return "F";    
     }
    
@@ -71,8 +66,12 @@ class ExpansionRules {
       return "*";
     }
   
-    leafMapsToNone(): String{
-      return "";
+    leafMapsToOtherLeaf(): String{
+      return "L";
+  }
+
+  leafMapsToBerry() : String{
+    return"B"
   }
   
   };

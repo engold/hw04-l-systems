@@ -22,9 +22,12 @@ let guiAngle: number = 10.0; // to keep track of slider value
 
 const controls = {
   // Added
-  iterations: 1.0,
-  branchAngle: 10.0,
-  'color': [colorVec[0], colorVec[1], colorVec[2]],
+  iterations: 4.0,
+  angle: 33.0,
+  Leaf_R: 0.2627, // for coloring the leaves 
+  Leaf_G: 0.5255, // 
+  Leaf_B: 0.0902, //
+  'UpdateColor' : createLSystem, 
 };
 
 let mySquare: MySquare;
@@ -32,31 +35,30 @@ let screenQuad: ScreenQuad;
 
 // Icosphere
 let icosphere: MyIcosphere;
-
 let leaf: MyIcosphere;
 
 // Mesh
-let obj0: string = readTextFile('./src/geometry/wahoo.obj')
-let myMesh: Mesh;
+let wahoo: Mesh; // plant pot
 let time: number = 0.0;
+let dirt: Mesh; // dirt for pot
 
 // the branches
 function createLSystem(): void{
-  let myLSystem: LSystem = new LSystem(new ExpansionRules(), controls.branchAngle);
+  let myLSystem: LSystem = new LSystem(new ExpansionRules(), controls.angle);
 
-  // arrays
+  // arrays for VBP data
   let data = myLSystem.drawLSystemFunc(controls.iterations); // iterations from slider
   let colorsBranchArray = []; // array to hold colors for each instance
-  let c1BranchArray = []; // array for column 1
-  let c2BranchArray = []; // array for column 2
-  let c3BranchArray = []; // array for column 3
-  let c4BranchArray = []; // array for column 4
+  let c1BranchArray = []; // column 1
+  let c2BranchArray = []; // column 2
+  let c3BranchArray = []; // column 3
+  let c4BranchArray = []; // column 4
 
   for (let i = 0.0; i < data.length; i++) {
     let currData = data[i];
     let currTransform = currData.transform;
 
-    // add column vecs (mat4 is 4x4)
+    // add column (mat4 is 4x4)
     // First column
     c1BranchArray.push(currTransform[0]);
     c1BranchArray.push(currTransform[1]);
@@ -77,17 +79,34 @@ function createLSystem(): void{
     c4BranchArray.push(currTransform[13]);
     c4BranchArray.push(currTransform[14]);
     c4BranchArray.push(currTransform[15]);
-    // add colors
+    // add colors for leaves
     if(currData.char == "*"){
+      colorsBranchArray.push(controls.Leaf_R);
+      colorsBranchArray.push(controls.Leaf_G);
+      colorsBranchArray.push(controls.Leaf_B);
       colorsBranchArray.push(1.0);
-      colorsBranchArray.push(0.0);
-      colorsBranchArray.push(0.0);
+    }
+    // for unripe berries
+    else if(currData.char == "L"){
+      //vec3(0.4588, 0.8314, 0.5412) lightish green color
+      colorsBranchArray.push(0.4588);
+      colorsBranchArray.push(0.8314);
+      colorsBranchArray.push(0.5412);
+      colorsBranchArray.push(1.0);
+    }
+    // for blue berries
+    else if(currData.char == "B"){
+      //vec3(0.149, 0.4157, 0.7216) blue color
+      colorsBranchArray.push(0.149);
+      colorsBranchArray.push(0.4157);
+      colorsBranchArray.push(0.75);
       colorsBranchArray.push(1.0);
     }
     else{
-    colorsBranchArray.push(0.2627);
-    colorsBranchArray.push(0.5255);
-    colorsBranchArray.push(0.0902);
+      // brown color vec3(0.2549, 0.1765, 0.1176)
+    colorsBranchArray.push(0.2549); 
+    colorsBranchArray.push(0.1765);
+    colorsBranchArray.push(0.1176);
     colorsBranchArray.push(1.0);
     }
   }
@@ -97,10 +116,8 @@ function createLSystem(): void{
   let c3BranchFinal: Float32Array = new Float32Array(c3BranchArray);
   let c4BranchFinal: Float32Array = new Float32Array(c4BranchArray);
   let branchColors: Float32Array = new Float32Array(colorsBranchArray);
-  // set the instance VBOs
-  mySquare.setInstanceVBOs(c1BranchFinal, c2BranchFinal, c3BranchFinal, c4BranchFinal, branchColors);
-  mySquare.setNumInstances(data.length); // transforms.length is number of draw matrices, number of individual instances to draw
 
+  // set the instance VBOs
   icosphere.setInstanceVBOs(c1BranchFinal, c2BranchFinal, c3BranchFinal, c4BranchFinal, branchColors);
   icosphere.setNumInstances(data.length);
 
@@ -118,18 +135,43 @@ function loadScene() {
   // Icosphere leaf shape
   leaf = new MyIcosphere(vec3.fromValues(0.0, 0.0, 0.0), 1.0, 5);
   leaf.create();
- 
-  // Mesh
-  myMesh = new Mesh(obj0, vec3.fromValues(0.0, 0.0, 0.0));
-  myMesh.create();
-  //console.log(myMesh);
 
-  // Set up instanced rendering data arrays here.
-  // This example creates a set of positional
-  // offsets and gradiated colors for a 100x100 grid
-  // of squares, even though the VBO data for just
-  // one square is actually passed to the GPU
- 
+  // mesh for the pot
+  let obj0: string = readTextFile('./src/geometry/plantpot.obj');
+  wahoo = new Mesh(obj0, vec3.fromValues(0.0, 0.0, 0.0));
+  wahoo.create();
+  // set up mesh VBOs for 1 instance
+  let wahooColorsArray: number[] = [0.4784, 0.3176, 0.1294, 1.0]; //brownish
+  let col1Array: number[] = [1, 0, 0, 0]; // scale x
+  let col2Array: number[] = [0, 1, 0, 0]; // scale y
+  let col3Array: number[] = [0, 0, 1, 0]; // scale z
+  let col4Array: number[] = [0, -5.85, 0, 1]; // translation/displacement
+  let col1: Float32Array = new Float32Array(col1Array);
+  let col2: Float32Array = new Float32Array(col2Array);
+  let col3: Float32Array = new Float32Array(col3Array);
+  let col4: Float32Array = new Float32Array(col4Array);
+  let colors: Float32Array = new Float32Array(wahooColorsArray);
+  wahoo.setInstanceVBOs(col1, col2, col3, col4, colors);
+  wahoo.setNumInstances(1);
+
+   // mesh for the dirt
+   let obj1: string = readTextFile('./src/geometry/dirt.obj');
+   dirt= new Mesh(obj1, vec3.fromValues(0.0, 0.0, 0.0));
+   dirt.create();
+   // set up mesh VBOs for 1 instance
+   let dirtColorsArray: number[] = [0.1608, 0.0902,0.0353, 1.0]; // dark brownish
+   let dirt_col1Array: number[] = [7.85, 0, 0, 0]; // scale x
+   let dirt_col2Array: number[] = [0, 3, 0, 0]; // scale y
+   let dirt_col3Array: number[] = [0, 0, 7.85, 0]; // scale z
+   let dirt_col4Array: number[] = [0, 0.35, 0, 1]; // translation/displacement
+   let dirt_col1: Float32Array = new Float32Array(dirt_col1Array);
+   let dirt_col2: Float32Array = new Float32Array(dirt_col2Array);
+   let dirt_col3: Float32Array = new Float32Array(dirt_col3Array);
+   let dirt_col4: Float32Array = new Float32Array(dirt_col4Array);
+   let dirt_colors: Float32Array = new Float32Array(dirtColorsArray);
+   dirt.setInstanceVBOs(dirt_col1, dirt_col2, dirt_col3, dirt_col4, dirt_colors);
+   dirt.setNumInstances(1);
+  
   // create LSystem
   createLSystem(); // call initial LSystem
  
@@ -147,7 +189,11 @@ function main() {
   // Add controls to the gui
   const gui = new DAT.GUI();
   gui.add(controls, 'iterations', 1.0, 5.0).step(1.0);
-  gui.add(controls, 'branchAngle', 0.0, 45.0).step(5.0);
+  gui.add(controls, 'angle', 0.0, 45.0).step(5.0);
+  gui.add(controls, 'Leaf_R', 0.0, 1).step(.05); //  slider for color values
+  gui.add(controls, 'Leaf_G', 0.0, 1).step(.05); // 
+  gui.add(controls, 'Leaf_B', 0.0, 1).step(.05); //
+  gui.add(controls, 'UpdateColor');
  
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');
@@ -193,8 +239,8 @@ function main() {
     // redo LSystem
     createLSystem();
   }
-  if(controls.branchAngle - guiAngle != 0){
-    guiAngle = controls.branchAngle;
+  if(controls.angle - guiAngle != 0){
+    guiAngle = controls.angle;
     // redro LSystem
     createLSystem();
   }
@@ -203,9 +249,10 @@ function main() {
     renderer.render(camera, flat, [screenQuad]);
     renderer.render(camera, instancedShader, [
       //mySquare,    
-      icosphere,
+      icosphere, // stem
       leaf,
-      //myMesh,
+      wahoo, // my plant
+      dirt, // dirt for the top of the pot
     ]);
     stats.end();
 

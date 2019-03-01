@@ -3,25 +3,23 @@ import {vec3, vec4, mat4, glMatrix, quat} from 'gl-matrix';
 const PI = 3.14159265359;
 
 class Turtle {
-  // Turtle Variables
+  // set up Turtle variables
   pos: vec3 = vec3.create();
   orient: vec3 = vec3.create();
   depth: number = 0.0;
   quat: quat = quat.create();
-  rotAmount: number = 0.0; // for gui slider branch angle
+  rotAmount: number = 0.0; // for gui slider input
 
-  // set the variables to what's passed in
+  // set up variables to values passed in
   constructor(p: vec3, o: vec3, q: quat, d: number, a: number) {
-    //let offset: vec3 = vec3.fromValues(0.0, -5.0,  0.0);
     this.pos = p;
-    //vec3.add(this.pos, this.pos, offset); // make it lower on screen
     this.orient = o;
     this.depth = d;
     this.quat = q;
     this.rotAmount = a;
   }
  
-  // "-" char
+  // "-" char rotation
   rotateLeft(): void {
     // quaternion - axis and angle to rotate
     let q: quat = quat.create();
@@ -45,7 +43,7 @@ class Turtle {
     quat.rotationTo(this.quat, vec3.fromValues(0, 1, 0), this.orient);      
   }
 
-  // "+" char
+  // "+" char rotation
   rotateRight(): void {
     // quaternion - axis and angle to rotate
     let q: quat = quat.create();
@@ -71,7 +69,7 @@ class Turtle {
   moveForward(): mat4 {    
     vec3.add(this.pos, this.pos, this.orient); // update the turtle pos
     let transformMat: mat4 = mat4.create();
-    let scaleVec: vec3 = vec3.fromValues(0.3, 1.0, 0.3);
+    let scaleVec: vec3 = vec3.fromValues(0.15, 1.0, 0.15);
     // Overall Matrix = T*R*S
     mat4.fromRotationTranslationScale(transformMat, this.quat, this.pos, scaleVec);
     return transformMat;
@@ -109,9 +107,22 @@ class Turtle {
     this.rotAmount = turtle.rotAmount;
   }
  
+  // for the "*" char, which is only places at the end of a branch (i.e. right before a "]" char)
   leaf(): mat4{
     vec3.add(this.pos, this.pos, this.orient);
-    return this.makeMatrix(vec3.fromValues(0.5, 0.5, 0.5));
+    return this.makeMatrix(vec3.fromValues(0.2, 0.8, 0.2));
   }
+
+  // for the "L" char: small berry
+  otherLeaf(): mat4{
+    vec3.add(this.pos, this.pos, this.orient);
+    return this.makeMatrix(vec3.fromValues(0.28, 0.28, 0.28));
+  }
+ // for the "B" char, smaller berry
+  otherLeaf2(): mat4{
+    vec3.add(this.pos, this.pos, this.orient);
+    return this.makeMatrix(vec3.fromValues(0.4, 0.4, 0.4));
+  }
+
 } ;
 export default Turtle;

@@ -12,6 +12,11 @@ class Mesh extends Drawable {
   center: vec4;
   offsets: Float32Array; // Data for bufTranslate, added for InstanceVBO stuff
 
+  transC1: Float32Array;
+  transC2: Float32Array;
+  transC3: Float32Array;
+  transC4: Float32Array;
+
   objString: string;
 
   constructor(objString: string, center: vec3) {
@@ -61,6 +66,11 @@ class Mesh extends Drawable {
     this.generateUV();
     this.generateCol();
 
+    this.generateTransformC1();
+    this.generateTransformC2();
+    this.generateTransformC3();
+    this.generateTransformC4();
+
     this.count = this.indices.length;
     this.numInstances = 1;
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.bufIdx);
@@ -82,16 +92,29 @@ class Mesh extends Drawable {
     this.objString = ""; // hacky clear
   }
 
-  setInstanceVBOs(offsets: Float32Array, colors: Float32Array) {
-    this.colors = colors;
-    this.offsets = offsets;
+// modified method to include columns
+setInstanceVBOs(inC1: Float32Array, inC2: Float32Array, inC3: Float32Array, inC4: Float32Array, inColors: Float32Array) {
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.bufCol);
-    gl.bufferData(gl.ARRAY_BUFFER, this.colors, gl.STATIC_DRAW);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTranslate);
-    gl.bufferData(gl.ARRAY_BUFFER, this.offsets, gl.STATIC_DRAW);
-  }
+  this.transC1 = inC1;
+  this.transC2 = inC2;
+  this.transC3 = inC3;
+  this.transC4 = inC4;
+  this.colors = inColors;
+  //this.offsets = inOffsets;
 
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.bufCol);
+  gl.bufferData(gl.ARRAY_BUFFER, this.colors, gl.STATIC_DRAW);
+  
+  // Added
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransformC1);
+  gl.bufferData(gl.ARRAY_BUFFER, this.transC1, gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransformC2);
+  gl.bufferData(gl.ARRAY_BUFFER, this.transC2, gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransformC3);
+  gl.bufferData(gl.ARRAY_BUFFER, this.transC3, gl.STATIC_DRAW);
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.bufTransformC4);
+  gl.bufferData(gl.ARRAY_BUFFER, this.transC4, gl.STATIC_DRAW);
+}
 
 };
 

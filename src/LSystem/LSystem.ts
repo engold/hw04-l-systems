@@ -11,13 +11,9 @@ class LSystem {
   expansionRules: ExpansionRules;
   // maps the chars to their functions for drawing
   drawingRules: Map<string, any>;  
-  // iterated string
-  iteratedString: string;
-  leafTransArray: mat4[];
-  counter: number;
 
   constructor(expansRule: ExpansionRules, angle: number) {
-    //                         position                        orientation                     quaternion                         depth  angle
+    // turtle takes in position, orientation, quaternion, depth, angle
     this.myTurtle = new Turtle(vec3.fromValues(0.0, 0.0, 0.0), vec3.fromValues(0.0, 1.0, 0.0), quat.fromValues(0.0, 0.0, 0.0, 1.0), 0.0, angle);
     this.expansionRules = expansRule;
 
@@ -27,10 +23,10 @@ class LSystem {
     this.drawingRules.set("-", this.myTurtle.rotateLeft.bind(this.myTurtle)); // rotate left
     this.drawingRules.set("+", this.myTurtle.rotateRight.bind(this.myTurtle)); // rotate right
     this.drawingRules.set("*", this.myTurtle.leaf.bind(this.myTurtle));
+    this.drawingRules.set("L", this.myTurtle.otherLeaf.bind(this.myTurtle));
+    this.drawingRules.set("B", this.myTurtle.otherLeaf2.bind(this.myTurtle));
     // set up the stack of turtle states
     this.turtleHistory = [];
-    this.leafTransArray =[];
-    this.counter = 0;
   }
 
   axiomExpansion(iters: number): string {
@@ -56,15 +52,14 @@ class LSystem {
       }
       expandedString = newString;
     }
-    this.iteratedString = expandedString;
     return expandedString; // final expanded string after all iterations
   }
  
   // Returns an array of transformation matrices to be applied in drawing
   drawLSystemFunc(iters: number) {
-    let LSysInfo: any = [];    
+    let LSystemInfo: any = [];    
     let expandedString: string = this.axiomExpansion(iters);
-    console.log("braches: " + expandedString);
+   // console.log("braches: " + expandedString); // for testing
 
     // for each character in the final string, get the associated drawing function
     for (let i: number = 0.0; i < expandedString.length; i++) {
@@ -79,7 +74,7 @@ class LSystem {
         if (returnFunc) {
           info.transform = returnFunc;
           info.char = currChar;
-          LSysInfo.push(info);          
+          LSystemInfo.push(info);          
         }        
       }
       // check if turtle state should be added to the turtle history
@@ -96,8 +91,7 @@ class LSystem {
         }
       }          
     } // end for loop
-    //this.leafTransArray = leafTemp;
-    return LSysInfo;
+    return LSystemInfo;
   }
 
 };
