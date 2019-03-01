@@ -20,10 +20,10 @@ Inspiration Image
 ## L-System Classes
 - Turtle
   - Keeps track of the position, orientation, quaternion for rotation, and recursion depth.
--   ExpansionRules
+- ExpansionRules
   - Includes the axiom, the starting string from which the grammar is expanded.
   - Includes mappings of characters to other charcters. This uses a Map<string, Map<number, any>>, where the string is the character, and the second map is for the probablility and corresponding expansion function (which just replaces the existing character with a new string). A single character can map to different strings based on the designated probability.
--   Lsystem 
+- L-System 
   - Includes a Turtle to "draw" as it moves and rotates according to the associated drawing functions for each character as the grammar string is read.
   - Includes a Turtle History array (treated as a stack) to save/restore the states of turtles.
   - Includes Expanion Rules: mappings of what a character becomes in the next iteration as it's expanded. 
