@@ -52,7 +52,7 @@ class LSystem {
       }
       expandedString = newString;
     }
-    return expandedString; // final expanded string after all iterations
+    return expandedString; // final expanded string
   }
  
   // Returns an array of transformation matrices to be applied in drawing
@@ -86,7 +86,8 @@ class LSystem {
       if (currChar == "]") {        
         let poppedTurtle: Turtle = this.turtleHistory.pop();        
         // if a turtle exists off the stack
-        if (poppedTurtle) {                    
+        if (poppedTurtle) {   
+            // restore that turtle state                 
           this.myTurtle.updateTurtleFromStack(poppedTurtle);
         }
       }          
